@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
@@ -29,14 +28,18 @@ jobs:
       - name: Build And Push
         if: "startsWith(github.ref, 'refs/tags/')"
         run: |
-          npm install coding-generic -g
+          # npm install coding-generic -g
           VERSION=${{ github.ref_name }} ./build.sh all
-          coding-generic -u=${{ secrets.CODING_PUBLIC_REGISTRY_PROJECT_TOKEN_USERNAME }}:${{ secrets.CODING_PUBLIC_REGISTRY_PROJECT_TOKEN_PASSWORD }} \
-            --dir \
-            --path=build/carctl \
-            --registry="https://coding-public-generic.pkg.coding.net/registry/disk?version=${{ github.ref_name }}"
+          # coding-generic -u=${{ secrets.CODING_PUBLIC_REGISTRY_PROJECT_TOKEN_USERNAME }}:${{ secrets.CODING_PUBLIC_REGISTRY_PROJECT_TOKEN_PASSWORD }} \
+          #   --dir \
+          #   --path=build/carctl \
+          #   --registry="https://coding-public-generic.pkg.coding.net/registry/disk?version=${{ github.ref_name }}"
 
-          coding-generic -u=${{ secrets.CODING_PUBLIC_REGISTRY_PROJECT_TOKEN_USERNAME }}:${{ secrets.CODING_PUBLIC_REGISTRY_PROJECT_TOKEN_PASSWORD }} \
-            --dir \
-            --path=build/carctl \
-            --registry="https://coding-public-generic.pkg.coding.net/registry/disk?version=latest"
+          # coding-generic -u=${{ secrets.CODING_PUBLIC_REGISTRY_PROJECT_TOKEN_USERNAME }}:${{ secrets.CODING_PUBLIC_REGISTRY_PROJECT_TOKEN_PASSWORD }} \
+          #   --dir \
+          #   --path=build/carctl \
+          #   --registry="https://coding-public-generic.pkg.coding.net/registry/disk?version=latest"
+      - uses: actions/upload-artifact@v4
+        with:
+            name: carctl_artifacts
+            path: build/carctl
