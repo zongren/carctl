@@ -141,7 +141,7 @@ func MigrateFromNexus(cfg *config.AuthConfig, out io.Writer, nexusUrl *url.URL, 
 	nexusScheme := nexusUrl.Scheme
 	nexusHost := nexusUrl.Host
 	urlPath := nexusUrl.Path
-	urlPathStrs := strings.Split(strings.Trim(urlPath, os.PathSeparator), os.PathSeparator)
+	urlPathStrs := strings.Split(strings.Trim(urlPath, string(os.PathSeparator)), string(os.PathSeparator))
 	repoName := urlPathStrs[1]
 	continuationToken := ""
 
@@ -170,7 +170,7 @@ func MigrateFromNexus(cfg *config.AuthConfig, out io.Writer, nexusUrl *url.URL, 
 func MigrateFromJfrog(cfg *config.AuthConfig, out io.Writer, jfrogUrl *url.URL, existsVersions, existsFiles map[string]bool) error {
 	log.Infof("Get file list from source repository [%s] ...", settings.Src)
 	// 获取仓库名称
-	urlPathStrs := strings.Split(strings.Trim(jfrogUrl.Path, os.PathSeparator), os.PathSeparator)
+	urlPathStrs := strings.Split(strings.Trim(jfrogUrl.Path, string(os.PathSeparator)), string(os.PathSeparator))
 	repository := urlPathStrs[1]
 
 	filesInfo, err := remote.FindFileListFromJfrog(jfrogUrl, repository)
@@ -709,10 +709,10 @@ func getArtInfo(path, repositoryPath string) (groupName, artifact, version, file
 	// path: /Users/chenxinyu/.m2/repository/org/kohsuke/stapler/json-lib/2.4-jenkins-2/json-lib-2.4-jenkins-2-sources.jar
 	// subPath: org/kohsuke/stapler/json-lib/2.4-jenkins-2/json-lib-2.4-jenkins-2-sources.jar
 	// filename: json-lib-2.4-jenkins-2-sources.jar
-	subPath := strings.Trim(strings.TrimPrefix(path, repositoryPath), os.PathSeparator)
+	subPath := strings.Trim(strings.TrimPrefix(path, repositoryPath), string(os.PathSeparator))
 	filename = filepath.Base(path)
 	fmt.Println("getArtInfo,path:%s,repositoryPath:%s,subPath:%s,filename:%s",path,repositoryPath,subPath,filename)
-	subPathChunks := strings.Split(subPath, os.PathSeparator)
+	subPathChunks := strings.Split(subPath, string(os.PathSeparator))
 	size := len(subPathChunks)
 	if size < 3 {
 		return "", "", "", "", errors.New("invalid path")
@@ -728,7 +728,7 @@ func getArtInfoFromSubPath(subPath string) (groupName, artifact, version, filena
 	// filename: json-lib-2.4-jenkins-2-sources.jar
 	filename = filepath.Base(subPath)
 
-	subPathChunks := strings.Split(subPath, os.PathSeparator)
+	subPathChunks := strings.Split(subPath, string(os.PathSeparator))
 	size := len(subPathChunks)
 	if size < 3 {
 		return "", "", "", "", errors.Errorf("invalid maven path: %s", subPath)
@@ -749,7 +749,7 @@ func getArtInfoFromSubPath(subPath string) (groupName, artifact, version, filena
 }
 
 func getPushUrl(filePath string) string {
-	subPath := strings.Trim(strings.TrimPrefix(filePath, settings.Src), os.PathSeparator)
+	subPath := strings.Trim(strings.TrimPrefix(filePath, settings.Src), string(os.PathSeparator))
 	return settings.GetDstHasSubSlash() + subPath
 }
 
@@ -778,11 +778,11 @@ func isNeedMigrate(existsVersions, existsFiles map[string]bool, groupName, artif
 	}
 	// 制品存在，判断文件是否存在
 	var fileName string
-	groupName = strings.Join(strings.Split(groupName, "."), os.PathSeparator)
+	groupName = strings.Join(strings.Split(groupName, "."), string(os.PathSeparator))
 	if strings.EqualFold("Metadata", version) {
-		fileName = join(os.PathSeparator, groupName, artifact, filename)
+		fileName = join(string(os.PathSeparator), groupName, artifact, filename)
 	} else {
-		fileName = join(os.PathSeparator, groupName, artifact, version, filename)
+		fileName = join(string(os.PathSeparator), groupName, artifact, version, filename)
 	}
 	return !existsFiles[fileName]
 }
