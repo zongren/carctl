@@ -711,7 +711,7 @@ func getArtInfo(path, repositoryPath string) (groupName, artifact, version, file
 	// filename: json-lib-2.4-jenkins-2-sources.jar
 	subPath := strings.Trim(strings.TrimPrefix(path, repositoryPath), "/")
 	filename = filepath.Base(path)
-
+	fmt.Println("getArtInfo,path:%s,repositoryPath:%s,subPath:%s,filename:%s",path,repositoryPath,subPath,filename)
 	subPathChunks := strings.Split(subPath, "/")
 	size := len(subPathChunks)
 	if size < 3 {
